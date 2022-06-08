@@ -1,4 +1,6 @@
 #include "AVL.h"
+#include <stdlib.h>
+#include <algorithm>
 
 template<typename Key, typename Value>
 AVL<Key, Value>::AVLNode::AVLNode(const Key& _key, const Value& _value, const int& _height) : 
@@ -14,7 +16,7 @@ int AVL<Key, Value>::nodeBalanceFactor(AVLNode* const& node) const {
 		return 0;
 	}
 
-	return height(node->left) - height(node->right);
+	return this->nodeHeight(node->left) - this->nodeHeight(node->right);
 }
 
 template<typename Key, typename Value>
@@ -24,6 +26,24 @@ int AVL<Key, Value>::nodeHeight(AVLNode* const& node) const {
 	}
 
 	return node->height;
+}
+
+template<typename Key, typename Value>
+bool AVL<Key, Value>::isAVL() const {
+	return this->isAVLInternal(this->root);
+}
+
+template<typename Key, typename Value>
+bool AVL<Key, Value>::isAVLInternal(AVLNode* const& node) const {
+	if (!node) {
+		return true;
+	}
+
+	if (std::abs(this->nodeBalanceFactor(node)) > 1) {
+		return false;
+	}
+
+	return this->isAVLInternal(node->left) && this->isAVLInternal(node->right);
 }
 
 template<typename Key, typename Value>
@@ -42,20 +62,34 @@ typename AVL<Key, Value>::AVLNode* AVL<Key, Value>::createTree(const std::vector
 	currIndex += elementsSize % 2 == 0 ? elementsSize / 2 - 1 : elementsSize / 2;
 
 	std::pair<Key, Value> current = elements[currIndex];
-	AVLNode* newNode = new AVLNode{ current.first, current.second, 0 };
+	AVLNode* newNode = new AVLNode{ current.first, current.second };
 
 	newNode->left = this->createTree(elements, start, currIndex - 1);
 	newNode->right = this->createTree(elements, currIndex + 1, end);
 
-	int leftNodeHeight = this->nodeHeight(newNode->left);
-	int rightNodeHeight = this->nodeHeight(newNode->right);
-
-	newNode->height = leftNodeHeight > rightNodeHeight ? leftNodeHeight : rightNodeHeight;
+	newNode->height = std::max(this->nodeHeight(newNode->left), this->nodeHeight(newNode->right));
 	newNode->height += 1;
 
 	return newNode;
 }
 
+template<typename Key, typename Value>
+void AVL<Key, Value>::deleteTree(AVLNode* node) {
+	if (!node) {
+		return;
+	}
+
+	this->deleteTree(node->left);
+	this->deleteTree(node->right);
+
+	delete node;
+}
+
+template<typename Key, typename Value>
+AVL<Key, Value>::~AVL() {
+	this->deleteTree(this->root);
+}
+ 
 template<typename Key, typename Value>
 AVL<Key, Value>::AVL(std::vector<std::pair<Key, Value>> elements) {
 	std::qsort(
@@ -96,8 +130,56 @@ int AVL<Key, Value>::balanceFactor() const {
 }
 
 template<typename Key, typename Value>
-void AVL<Key, Value>::insert(const Key&, const Value&) {
+void AVL<Key, Value>::insert(const Key& key, const Value& value) {
+	if (!this->root) {
+		this->root = this->insertFromNode(this->root, key, value);
+	} else {
+		this->insertFromNode(this->root, key, value);
+	}
+}
 
+template<typename Key, typename Value>
+typename AVL<Key, Value>::AVLNode* AVL<Key, Value>::rotateRight(AVLNode* y)
+{
+	AVLNode* x = y->left;
+
+	y->left = x->right;
+	x->right = y;
+	y->height = 1 + std::max(this->nodeHeight(y->left), this->nodeHeight(y->right));
+	x->height = 1 + std::max(this->nodeHeight(x->left), this->nodeHeight(x->right));
+
+	return x;
+}
+
+template<typename Key, typename Value>
+typename AVL<Key, Value>::AVLNode* AVL<Key, Value>::rotateLeft(AVLNode* y)
+{
+	AVLNode* x = y->right;
+	y->right = x->left;
+	x->left = y;
+	y->height = 1 + std::max(this->nodeHeight(y->left), this->nodeHeight(y->right));
+	x->height = 1 + std::max(this->nodeHeight(x->left), this->nodeHeight(x->right));
+	return x;
+}
+
+template<typename Key, typename Value>
+typename AVL<Key, Value>::AVLNode* AVL<Key, Value>::balanceNode(AVLNode* x)
+{
+	if (this->nodeBalanceFactor(x) < -1) {//left case
+		if (this->nodeBalanceFactor(x->right) > 0) {//right left case
+			x->right = this->rotateRight(x->right);
+		}
+
+		x = this->rotateLeft(x);
+	} else if (this->nodeBalanceFactor(x) > 1) {//right case
+		if (this->nodeBalanceFactor(x->left) < 0) {//left right case
+			x->left = this->rotateLeft(x->left);
+		}
+
+		x = this->rotateRight(x);
+	}
+
+	return x;
 }
 
 template<typename Key, typename Value>
@@ -108,14 +190,80 @@ typename const AVL<Key, Value>::AVLNode* AVL<Key, Value>::findFromNode(AVLNode* 
 
 	if (key < node->key) {
 		return findFromNode(node->left, key);
-	}
-	else if (key > node->key)
-	{
+	} else if (key > node->key) {
 		return findFromNode(node->right, key);
 	}
 
 	return node;
 }
+
+template<typename Key, typename Value>
+typename AVL<Key, Value>::AVLNode* AVL<Key, Value>::insertFromNode(AVLNode* node, const Key& key, const Value& value) {
+	if (!node) {
+		return new AVLNode(key, value);
+	}
+
+	if (key < node->key) {
+		node->left = this->insertFromNode(node->left, key, value);
+	} else if (key > node->key) {
+		node->right = this->insertFromNode(node->right, key, value);
+	} else {
+		node->value = value;
+		return node;
+	}
+
+	node->height = 1 + std::max(this->nodeHeight(node->left), this->nodeHeight(node->right));
+	return this->balanceNode(node);
+}
+
+template<typename Key, typename Value>
+typename AVL<Key, Value>::AVLNode* AVL<Key, Value>::removeFromNode(AVLNode* node, const Key& key) {
+	if (!node) {
+		return nullptr;
+	}
+
+	if (key < node->key) {
+		node->left = this->removeFromNode(node->left, key);
+	} else if (key > node->key) {
+		node->right = this->removeFromNode(node->right, key);
+	} else {
+		if (node->left || node->right) { //node's # of children <= 1
+			AVLNode* temp = node->left ? node->left : node->right;
+
+			if (!temp) {//node's # of children == 0
+				temp = node;
+				node = nullptr;
+			}
+			else {//node's # of children == 1
+				*node = *temp;
+			}
+
+			delete temp;
+		} else { //node's # of childern == 2
+			AVLNode* largestNode = this->largestNode(node->left);
+			*node = *largestNode;
+
+			node->left = this->removeFromNode(node->left, largestNode->key);
+		}
+	}
+
+	if (!node) {//The root was removed
+		return nullptr;
+	}
+
+	node->height = 1 + std::max(this->nodeHeight(node->left), this->nodeHeight(node->right));
+	return this->balanceNode(node);
+}
+
+template<typename Key, typename Value>
+typename AVL<Key, Value>::AVLNode* AVL<Key, Value>::largestNode(AVLNode* node) {
+	if (node && node->right) {
+		return this->largestNode(node->right);
+	}
+
+	return node;
+}
+
 
 template<typename Key, typename Value>
 const Value* AVL<Key, Value>::getValue(const Key& key) const {
@@ -133,6 +281,6 @@ bool AVL<Key, Value>::contains(const Key& key) const {
 }
 
 template<typename Key, typename Value>
-void AVL<Key, Value>::remove(const Key&) {
-
+void AVL<Key, Value>::remove(const Key& key) {
+	this->removeFromNode(this->root, key);
 }
