@@ -8,7 +8,7 @@ class AVL
 {
 	private:
 		struct AVLNode {
-			const Key key;
+			Key key;
 			Value value;
 			int height;
 

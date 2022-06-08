@@ -9,5 +9,11 @@ int main() {
 	tree.insert(10, 10);
 	//tree with no duplicates
 	std::cout << tree.height() << std::endl;
+	std::cout << tree.isAVL() << std::endl;
+
+	tree.remove(1);
+	tree.remove(2);
+	tree.remove(3);
+	std::cout << tree.height() << std::endl;
 	std::cout << tree.isAVL();
 }
