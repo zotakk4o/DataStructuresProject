@@ -78,6 +78,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(VCInstallDir)Auxiliary\VS\UnitTest\include;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(VCInstallDir)Auxiliary\VS\UnitTest\lib</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -141,10 +143,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\AVL\AVL.cpp" />
-    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\AVL\tests\AVLTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AVL\AVL.h" />
+    <ClInclude Include="src\Doctest\doctest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

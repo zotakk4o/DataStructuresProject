@@ -138,11 +138,11 @@ template<typename Key, typename Value>
 typename AVL<Key, Value>::AVLNode* AVL<Key, Value>::rotateRight(AVLNode* y)
 {
 	AVLNode* x = y->left;
-	AVLNode* T2 = x->right;
+	AVLNode* z = x->right;
 
 	// Perform rotation
 	x->right = y;
-	y->left = T2;
+	y->left = z;
 
 	// Update heights
 	x->height = 1 + std::max(this->nodeHeight(x->left), this->nodeHeight(x->right));
@@ -156,11 +156,11 @@ template<typename Key, typename Value>
 typename AVL<Key, Value>::AVLNode* AVL<Key, Value>::rotateLeft(AVLNode* x)
 {
 	AVLNode* y = x->right;
-	AVLNode* T2 = y->left;
+	AVLNode* z = y->left;
 
 	// Perform rotation
 	y->left = x;
-	x->right = T2;
+	x->right = z;
 
 	// Update heights
 	x->height = 1 + std::max(this->nodeHeight(x->left), this->nodeHeight(x->right));
@@ -249,7 +249,8 @@ typename AVL<Key, Value>::AVLNode* AVL<Key, Value>::removeFromNode(AVLNode* node
 			delete temp;
 		} else { //node's # of childern == 2
 			AVLNode* largestNode = this->largestNode(node->left);
-			*node = *largestNode;
+			node->key = largestNode->key;
+			node->value = largestNode->value;
 
 			node->left = this->removeFromNode(node->left, largestNode->key);
 		}
@@ -280,7 +281,25 @@ const Value* AVL<Key, Value>::getValue(const Key& key) const {
 		return nullptr;
 	}
 
-	return result->value;
+	return &result->value;
+}
+
+template<typename Key, typename Value>
+const Value* AVL<Key, Value>::getRootValue() const {
+	if (!this->root) {
+		return nullptr;
+	}
+
+	return &this->root->value;
+}
+
+template<typename Key, typename Value>
+const Key* AVL<Key, Value>::getRootKey() const {
+	if (!this->root) {
+		return nullptr;
+	}
+
+	return &this->root->key;
 }
 
 template<typename Key, typename Value>
@@ -291,4 +310,18 @@ bool AVL<Key, Value>::contains(const Key& key) const {
 template<typename Key, typename Value>
 void AVL<Key, Value>::remove(const Key& key) {
 	this->root = this->removeFromNode(this->root, key);
+}
+
+template<typename Key, typename Value>
+int AVL<Key, Value>::nodesCountInternal(AVLNode* const& node) const {
+	if (!node) {
+		return 0;
+	}
+
+	return 1 + this->nodesCountInternal(node->left) + this->nodesCountInternal(node->right);
+}
+
+template<typename Key, typename Value>
+int AVL<Key, Value>::nodesCount() const {
+	return this->nodesCountInternal(this->root);
 }
