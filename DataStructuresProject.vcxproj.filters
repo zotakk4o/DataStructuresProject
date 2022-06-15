@@ -21,12 +21,21 @@
     <ClCompile Include="src\AVL\tests\AVLTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\SkipList\SkipList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SkipList\tests\SkipListTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AVL\AVL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Doctest\doctest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SkipList\SkipList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

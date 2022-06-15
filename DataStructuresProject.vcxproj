@@ -142,10 +142,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\SkipList\SkipList.cpp" />
     <ClCompile Include="src\AVL\AVL.cpp" />
     <ClCompile Include="src\AVL\tests\AVLTests.cpp" />
+    <ClCompile Include="src\SkipList\tests\SkipListTests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\SkipList\SkipList.h" />
     <ClInclude Include="src\AVL\AVL.h" />
     <ClInclude Include="src\Doctest\doctest.h" />
   </ItemGroup>
