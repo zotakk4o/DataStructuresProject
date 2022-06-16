@@ -27,6 +27,9 @@
     <ClCompile Include="src\SkipList\tests\SkipListTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AVL\AVL.h">

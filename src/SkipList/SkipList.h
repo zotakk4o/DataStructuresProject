@@ -25,7 +25,7 @@ class SkipList
 		unsigned int heighestLevel;
 		float probability;
 
-		SkipListNode* insertAndDeleteHelper(std::vector<SkipListNode*>&, const Key&);
+		SkipListNode* findInsertOrDeleteNode(std::vector<SkipListNode*>&, const Key&);
 
 		unsigned int generateLevel() const;
 		void deleteInternals();
@@ -38,6 +38,9 @@ class SkipList
 		void insert(const Key&, const Value&);
 		bool contains(const Key&) const;
 		void remove(const Key&);
+
+		unsigned int numberOfElements() const;
+		void displayList() const;
 };
 
 #endif

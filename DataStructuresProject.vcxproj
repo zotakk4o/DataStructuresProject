@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\SkipList\SkipList.cpp" />
     <ClCompile Include="src\AVL\AVL.cpp" />
     <ClCompile Include="src\AVL\tests\AVLTests.cpp" />

@@ -51,18 +51,19 @@ SkipList<Key, Value>::~SkipList() {
 template<typename Key, typename Value>
 SkipList<Key, Value>::SkipList(const unsigned int& maximumElements, const float& _probability) :
 	probability(_probability),
-	maxLevel(std::log2(maximumElements)),
     heighestLevel(0)
 {
+    this->maxLevel = maximumElements > 0 ? std::log2(maximumElements) : 0;
     this->head = new SkipListNode{ this->maxLevel };
 }
 
 template<typename Key, typename Value>
 void SkipList<Key, Value>::insert(const Key& key, const Value& value) {
     std::vector<SkipListNode*> update{ this->maxLevel + 1 };
-    SkipListNode* current = this->insertAndDeleteHelper(update, key);
+    SkipListNode* current = this->findInsertOrDeleteNode(update, key);
 
     if (current && current->key == key) {
+        current->value = value;
         return;
     }
 
@@ -84,7 +85,7 @@ void SkipList<Key, Value>::insert(const Key& key, const Value& value) {
 }
 
 template<typename Key, typename Value>
-typename SkipList<Key, Value>::SkipListNode* SkipList<Key, Value>::insertAndDeleteHelper(std::vector<SkipListNode*>& update, const Key& key) {
+typename SkipList<Key, Value>::SkipListNode* SkipList<Key, Value>::findInsertOrDeleteNode(std::vector<SkipListNode*>& update, const Key& key) {
     SkipListNode* current = this->head;
 
     for (unsigned int i = this->heighestLevel; i >= 0 && i <= this->heighestLevel; i--)
@@ -98,6 +99,22 @@ typename SkipList<Key, Value>::SkipListNode* SkipList<Key, Value>::insertAndDele
     current = current->forward[0];
     return current;
 }
+
+template<typename Key, typename Value>
+void SkipList<Key, Value>::displayList() const {
+    std::cout << "\n*****Skip List*****" << "\n";
+    for (int i = 0; i <= this->heighestLevel; i++)
+    {
+        SkipListNode* node = this->head->forward[i];
+        std::cout << "Level " << i << ": ";
+        while (node)
+        {
+            std::cout << node->key << " ";
+            node = node->forward[i];
+        }
+        std::cout << "\n";
+    }
+};
 
 template<typename Key, typename Value>
 bool SkipList<Key, Value>::contains(const Key& key) const {
@@ -116,7 +133,7 @@ bool SkipList<Key, Value>::contains(const Key& key) const {
 template<typename Key, typename Value>
 void SkipList<Key, Value>::remove(const Key& key) {
     std::vector<SkipListNode*> update{ this->maxLevel + 1 };
-    SkipListNode* current = this->insertAndDeleteHelper(update, key);
+    SkipListNode* current = this->findInsertOrDeleteNode(update, key);
 
     if (!current || current->key != key) {
         return;
@@ -135,4 +152,20 @@ void SkipList<Key, Value>::remove(const Key& key) {
     }
 
     delete current;
+}
+
+template<typename Key, typename Value>
+unsigned int SkipList<Key, Value>::numberOfElements() const {
+    if (!this->head) {
+        return 0;
+    }
+
+    unsigned int res = 0;
+    SkipListNode* current = this->head;
+    while (current && current->forward[0]) {
+        current = current->forward[0];
+        res++;
+    }
+
+    return res;
 }
