@@ -42,7 +42,7 @@ double testSkipListWithElements(const unsigned int& numberOfElements, const int&
 	return mean;
 }
 
-TEST_CASE("AVL Insert") {
+TEST_CASE("SkipList Insert") {
 	SkipList<int, int> skipList{11};
 	skipList.insert(8, 8);
 	skipList.insert(9, 9);
@@ -59,7 +59,7 @@ TEST_CASE("AVL Insert") {
 	CHECK(skipList.numberOfElements() == 11);
 }
 
-TEST_CASE("AVL Insert, duplicate node") {
+TEST_CASE("SkipList Insert, duplicate node") {
 	SkipList<int, int> skipList{ 2 };
 	skipList.insert(8, 8);
 	skipList.insert(8, 8);
@@ -67,7 +67,7 @@ TEST_CASE("AVL Insert, duplicate node") {
 	CHECK(skipList.numberOfElements() == 1);
 }
 
-TEST_CASE("AVL Remove") {
+TEST_CASE("SkipList Remove") {
 	SkipList<int, int> skipList{ 11 };
 	skipList.insert(8, 8);
 	skipList.insert(9, 9);
@@ -90,7 +90,7 @@ TEST_CASE("AVL Remove") {
 	CHECK(skipList.numberOfElements() == 6);
 }
 
-TEST_CASE("AVL Remove root") {
+TEST_CASE("SkipList Remove root") {
 	SkipList<int, int> skipList{ 1 };
 	skipList.insert(1, 1);
 	CHECK(skipList.numberOfElements() == 1);
@@ -98,21 +98,21 @@ TEST_CASE("AVL Remove root") {
 	CHECK(skipList.numberOfElements() == 0);
 }
 
-TEST_CASE("AVL Remove, empty list") {
+TEST_CASE("SkipList Remove, empty list") {
 	SkipList<int, int> skipList{ 1 };
 	CHECK(skipList.numberOfElements() == 0);
 	skipList.remove(1);
 	CHECK(skipList.numberOfElements() == 0);
 }
 
-TEST_CASE("AVL Remove, element that does not exist") {
+TEST_CASE("SkipList Remove, element that does not exist") {
 	SkipList<int, int> skipList{ 1 };
 	int numberOfElements = skipList.numberOfElements();
 	skipList.remove(143);
 	CHECK(skipList.numberOfElements() == numberOfElements);
 }
 
-TEST_CASE("AVL Containts") {
+TEST_CASE("SkipList Containts") {
 	SkipList<int, int> skipList{ 11 };
 	skipList.insert(8, 8);
 	skipList.insert(9, 9);
@@ -128,12 +128,12 @@ TEST_CASE("AVL Containts") {
 	CHECK(skipList.contains(1));
 }
 
-TEST_CASE("AVL Containts, empty list") {
+TEST_CASE("SkipList Containts, empty list") {
 	SkipList<int, int> skipList{ 1 };
 	CHECK(skipList.contains(1) == false);
 }
 
-TEST_CASE("AVL Containts, node that does not exist") {
+TEST_CASE("SkipList Containts, node that does not exist") {
 	SkipList<int, int> skipList{ 2 };
 	skipList.insert(8, 8);
 	skipList.insert(9, 9);
@@ -141,44 +141,44 @@ TEST_CASE("AVL Containts, node that does not exist") {
 	CHECK(skipList.contains(893223) == false);
 }
 
-TEST_CASE("AVL Tree with 50 elements") {
-	CHECK(testSkipListWithElements(50, 1, 'i') < 50);
-	CHECK(testSkipListWithElements(50, 1, 'c') < 50);
-	CHECK(testSkipListWithElements(50, 1, 'r') < 50);
+TEST_CASE("SkipList Tree with 50 elements") {
+	CHECK(testSkipListWithElements(50, 1, 'i') < 10);
+	CHECK(testSkipListWithElements(50, 1, 'c') < 10);
+	CHECK(testSkipListWithElements(50, 1, 'r') < 10);
 }
 
-TEST_CASE("AVL Tree with 500 elements") {
-	CHECK(testSkipListWithElements(500, 1, 'i') < 50);
-	CHECK(testSkipListWithElements(500, 1, 'c') < 50);
-	CHECK(testSkipListWithElements(500, 1, 'r') < 50);
+TEST_CASE("SkipList Tree with 500 elements") {
+	CHECK(testSkipListWithElements(500, 1, 'i') < 10);
+	CHECK(testSkipListWithElements(500, 1, 'c') < 10);
+	CHECK(testSkipListWithElements(500, 1, 'r') < 10);
 }
 
-TEST_CASE("AVL Tree with 5 000 elements") {
-	CHECK(testSkipListWithElements(5000, 1, 'i') < 50);
-	CHECK(testSkipListWithElements(5000, 1, 'c') < 50);
-	CHECK(testSkipListWithElements(5000, 1, 'r') < 50);
+TEST_CASE("SkipList Tree with 5 000 elements") {
+	CHECK(testSkipListWithElements(5000, 1, 'i') < 10);
+	CHECK(testSkipListWithElements(5000, 1, 'c') < 10);
+	CHECK(testSkipListWithElements(5000, 1, 'r') < 10);
 }
 
-TEST_CASE("AVL Tree with 50 000 elements") {
-	CHECK(testSkipListWithElements(50000, 1, 'i') < 100);
-	CHECK(testSkipListWithElements(50000, 1, 'c') < 100);
-	CHECK(testSkipListWithElements(50000, 1, 'r') < 100);
+TEST_CASE("SkipList Tree with 50 000 elements") {
+	CHECK(testSkipListWithElements(50000, 1, 'i') < 20);
+	CHECK(testSkipListWithElements(50000, 1, 'c') < 20);
+	CHECK(testSkipListWithElements(50000, 1, 'r') < 20);
 }
 
-TEST_CASE("AVL Tree with 500 000 elements") {
-	CHECK(testSkipListWithElements(500000, 1, 'i') < 200);
-	CHECK(testSkipListWithElements(500000, 1, 'c') < 200);
-	CHECK(testSkipListWithElements(500000, 1, 'r') < 200);
+TEST_CASE("SkipList Tree with 500 000 elements") {
+	CHECK(testSkipListWithElements(500000, 1, 'i') < 20);
+	CHECK(testSkipListWithElements(500000, 1, 'c') < 20);
+	CHECK(testSkipListWithElements(500000, 1, 'r') < 20);
 }
 
-TEST_CASE("AVL Tree with 5 000 000 elements") {
-	CHECK(testSkipListWithElements(5000000, 1, 'i') < 200);
-	CHECK(testSkipListWithElements(5000000, 1, 'c') < 200);
-	CHECK(testSkipListWithElements(5000000, 1, 'r') < 200);
+TEST_CASE("SkipList Tree with 5 000 000 elements") {
+	CHECK(testSkipListWithElements(5000000, 1, 'i') < 50);
+	CHECK(testSkipListWithElements(5000000, 1, 'c') < 50);
+	CHECK(testSkipListWithElements(5000000, 1, 'r') < 50);
 }
 
-TEST_CASE("AVL Tree with 50 000 000 elements") {
-	CHECK(testSkipListWithElements(50000000, 1, 'i') < 200);
-	CHECK(testSkipListWithElements(50000000, 1, 'c') < 200);
-	CHECK(testSkipListWithElements(50000000, 1, 'r') < 200);
-}
+//TEST_CASE("SkipList Tree with 50 000 000 elements") {
+//	CHECK(testSkipListWithElements(50000000, 1, 'i') < 50);
+//	CHECK(testSkipListWithElements(50000000, 1, 'c') < 50);
+//	CHECK(testSkipListWithElements(50000000, 1, 'r') < 50);
+//}
