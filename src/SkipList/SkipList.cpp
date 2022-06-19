@@ -68,7 +68,7 @@ void SkipList<Key, Value>::insert(const Key& key, const Value& value) {
     }
 
     unsigned int generatedLevel = this->generateLevel();
-    if (generatedLevel > this->heighestLevel) {
+    if (generatedLevel > this->heighestLevel) {//levels from the head node must be updated
         for (unsigned int i = this->heighestLevel + 1; i < generatedLevel + 1; i++) {
             update[i] = this->head;
         }
@@ -78,6 +78,7 @@ void SkipList<Key, Value>::insert(const Key& key, const Value& value) {
 
     SkipListNode* n = new SkipListNode{ key, value, generatedLevel };
 
+    //update the links interrupted by the levels of current node
     for (unsigned int i = 0; i <= generatedLevel; i++) {
         n->forward[i] = update[i]->forward[i];
         update[i]->forward[i] = n;
@@ -90,31 +91,16 @@ typename SkipList<Key, Value>::SkipListNode* SkipList<Key, Value>::findInsertOrD
 
     for (unsigned int i = this->heighestLevel; i >= 0 && i <= this->heighestLevel; i--)
     {
+        //moving through the current level while there is an available node with node.key < key
         while (current->forward[i] && current->forward[i]->key < key) {
             current = current->forward[i];
         }
+        //after the node for update at the current level is found, store it
         update[i] = current;
     }
 
-    current = current->forward[0];
-    return current;
+    return current->forward[0];
 }
-
-template<typename Key, typename Value>
-void SkipList<Key, Value>::displayList() const {
-    std::cout << "\n*****Skip List*****" << "\n";
-    for (int i = 0; i <= this->heighestLevel; i++)
-    {
-        SkipListNode* node = this->head->forward[i];
-        std::cout << "Level " << i << ": ";
-        while (node)
-        {
-            std::cout << node->key << " ";
-            node = node->forward[i];
-        }
-        std::cout << "\n";
-    }
-};
 
 template<typename Key, typename Value>
 bool SkipList<Key, Value>::contains(const Key& key) const {
@@ -140,13 +126,14 @@ void SkipList<Key, Value>::remove(const Key& key) {
     }
 
     for (unsigned int i = 0; i <= this->heighestLevel; i++) {
-        if (update[i]->forward[i] != current) {
+        if (update[i]->forward[i] != current) {//should not forward levels not pointing to the current node
             break;
         }
 
         update[i]->forward[i] = current->forward[i];
     }
 
+    //if the heighest node was removed, recalculate the heighest level
     while (this->heighestLevel > 0 && !this->head->forward[this->heighestLevel]) {
         this->heighestLevel--;
     }

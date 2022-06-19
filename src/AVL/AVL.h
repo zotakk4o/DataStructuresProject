@@ -121,6 +121,10 @@ class AVL
 	public:
 		~AVL();
 		AVL();
+		/// <summary>
+		/// Creates a tree by a vector of key-value pairs
+		/// </summary>
+		/// <param>std::vector<std::pair<Key, Value>> the key-values pairs</param>
 		AVL(std::vector<std::pair<Key, Value>>);
 
 		/// <summary>
