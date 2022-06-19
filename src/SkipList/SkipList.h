@@ -4,6 +4,11 @@
 #include<vector>
 #include<random>
 
+
+/// <summary>
+/// A template class representing a Skip list data structure
+/// Duplicate keys are not supported - the lastly added value for a key is taken
+/// </summary>
 template<typename Key, typename Value>
 class SkipList
 {
